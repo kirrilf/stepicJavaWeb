@@ -8,10 +8,11 @@ import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import servlets.SessionsServlet;
-import servlets.SignInServlet;
-import servlets.SignUpServlet;
-import servlets.UsersServlet;
+import servlets.*;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 
 public class Main {
@@ -20,9 +21,7 @@ public class Main {
         //ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         //context.addServlet(new ServletHolder(allRequestsServlet), "/*");
 
-        AccountService accountService = new AccountService();
-        accountService.addNewUser(new UserProfile("admin"));
-        accountService.addNewUser(new UserProfile("test"));
+       AccountService accountService = new AccountService();
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.addServlet(new ServletHolder(new UsersServlet(accountService)), "/api/v1/users");
@@ -45,6 +44,11 @@ public class Main {
         server.start();
         System.out.println("Server started");
         server.join();
+
+
+
+
+
     }
 }
 
