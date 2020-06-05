@@ -7,17 +7,21 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import dao.UserDAO;
+import org.h2.jdbcx.JdbcDataSource;
 
 public class DBService {
     private final Connection connection;
 
     public DBService(){
-        this.connection = getPSQLConnection();
+       // this.connection = getPSQLConnection();
+        this.connection = getH2Connection();
         UserDAO dao = new UserDAO(this.connection);
         try {
             dao.createTable();
-            dao.insertUser("admin", "admin@admin.com", "admin");
-        }catch (SQLException e){
+            if(getUser("admin") == null) {
+                dao.insertUser("admin", "admin@admin.com", "admin");
+            }
+        }catch (SQLException | DBException e){
             e.printStackTrace();
         }
 
@@ -69,11 +73,7 @@ public class DBService {
     }
 
     public UserProfile getUser(String login) throws DBException {
-        try {
-            return (new UserDAO(connection).getUserProfile(login));
-        } catch (SQLException e) {
-            throw new DBException(e);
-        }
+        return (new UserDAO(connection).getUserProfile(login));
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -93,6 +93,24 @@ public class DBService {
 
         return null;
 
+    }
+    public static Connection getH2Connection() {
+        try {
+            String url = "jdbc:h2:./h2db";
+            String name = "tully";
+            String pass = "tully";
+
+            JdbcDataSource ds = new JdbcDataSource();
+            ds.setURL(url);
+            ds.setUser(name);
+            ds.setPassword(pass);
+
+            Connection connection = DriverManager.getConnection(url, name, pass);
+            return connection;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

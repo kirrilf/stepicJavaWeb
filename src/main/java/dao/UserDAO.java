@@ -23,11 +23,15 @@ public class UserDAO {
         executor.execUpdate("DELETE FROM users WHERE login='" + login+"'");
     }
 
-    public UserProfile getUserProfile(String login) throws SQLException {
+    public UserProfile getUserProfile(String login){
+        try {
         return executor.execQuery("SELECT * FROM users WHERE login='" + login+"'", result -> {
             result.next();
             return new UserProfile(result.getString("login"), result.getString("password"), result.getString("email"));
-        });
+        });}
+        catch (SQLException e){
+            return null;
+        }
     }
 
     public long getUserId(String login) throws SQLException {

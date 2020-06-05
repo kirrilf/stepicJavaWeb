@@ -18,7 +18,7 @@ public class AccountService {
         sessionIdToProfile = new HashMap<>();
 
         this.dbService = new DBService();
-        dbService.printConnectInfo();
+        //dbService.printConnectInfo();
 
     }
 
