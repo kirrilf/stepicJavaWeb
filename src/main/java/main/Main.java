@@ -1,7 +1,7 @@
 package main;
 
 import accounts.AccountService;
-import accounts.UserProfile;
+import dataSets.UsersDataSet;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
@@ -9,10 +9,11 @@ import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import servlets.*;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import servlets.authorizedServlets.SessionsServlet;
+import servlets.authorizedServlets.SignInServlet;
+import servlets.authorizedServlets.SignUpServlet;
+import servlets.db.DBService;
+import servlets.db.DBException;
 
 
 public class Main {
@@ -44,7 +45,6 @@ public class Main {
         server.start();
         System.out.println("Server started");
         server.join();
-
 
 
 

@@ -1,4 +1,4 @@
-package servlets;
+package servlets.db;
 
 public class DBException extends Exception {
     public DBException(Throwable throwable) {

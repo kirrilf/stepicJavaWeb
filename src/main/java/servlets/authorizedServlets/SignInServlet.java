@@ -1,4 +1,4 @@
-package servlets;
+package servlets.authorizedServlets;
 
 import accounts.AccountService;
 import accounts.UserProfile;
