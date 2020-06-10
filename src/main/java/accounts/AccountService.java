@@ -5,6 +5,7 @@ package accounts;
 import dataSets.UsersDataSet;
 import servlets.db.DBException;
 import servlets.db.DBService;
+import servlets.db.DBServicelmpl;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +18,7 @@ public class AccountService {
     public AccountService(){
       //  loginToProfile = new HashMap<>();
         sessionIdToProfile = new HashMap<>();
-        dbService = new DBService();
+        dbService = new DBServicelmpl();
         dbService.printConnectInfo();
     }
 
