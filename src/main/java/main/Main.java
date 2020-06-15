@@ -1,5 +1,9 @@
 package main;
 
+import accountServer.AccountServer;
+import accountServer.AccountServerController;
+import accountServer.AccountServerControllerMBean;
+import accountServer.AccountServerI;
 import accounts.AccountService;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
@@ -7,11 +11,20 @@ import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import resources.ResourceService;
+import sax.ReadXMLFileSAX;
 import servlets.*;
 import servlets.authorizedServlets.SessionsServlet;
 import servlets.authorizedServlets.SignInServlet;
 import servlets.authorizedServlets.SignUpServlet;
 import servlets.sockets.WebSocketChatServlet;
+import resources.TestResourceController;
+import resources.TestResource;
+import resources.TestResourceControllerMBean;
+
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
+import java.lang.management.ManagementFactory;
 
 
 public class Main {
@@ -20,7 +33,7 @@ public class Main {
         //ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         //context.addServlet(new ServletHolder(allRequestsServlet), "/*");
 
-       AccountService accountService = new AccountService();
+       /*AccountService accountService = new AccountService();
 
        Server server = new Server(8080);
        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
@@ -36,10 +49,43 @@ public class Main {
         handlers.setHandlers(new Handler[]{resource_handler, context});
 
 
+
+
+
+
         //server.setHandler(context);
         server.setHandler(handlers);
+*/
 
 
+        AccountServerI accountServer = new AccountServer(10);
+
+        AccountServerControllerMBean serverStatistics = new AccountServerController(accountServer);
+        TestResource testResource = new TestResource();
+        TestResourceControllerMBean testResourceControllerMBean = new TestResourceController(testResource);
+        MBeanServer mBeanServer  = ManagementFactory.getPlatformMBeanServer();
+        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+        //ObjectName name = new ObjectName("ServerManager:type=AccountServerController");
+        ObjectName name = new ObjectName("Admin:type=AccountServerController.usersLimit");
+        ObjectName objectName = new ObjectName("Admin:type=ResourceServerController");
+        mbs.registerMBean(serverStatistics, name);
+       // mBeanServer.registerMBean(testResourceControllerMBean, objectName);
+
+        ResourceService resourceService = ResourceService.getInstance();
+
+        Server server = new Server(8080);
+        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        context.addServlet(new ServletHolder(new AdminPageServlet(accountServer)), AdminPageServlet.PAGE_URL);
+        context.addServlet(new ServletHolder(new ResourcesServlet(testResource)), ResourcesServlet.PAGE_URL);
+
+        ResourceHandler resource_handler = new ResourceHandler();
+        resource_handler.setDirectoriesListed(true);
+        resource_handler.setResourceBase("static");
+
+        HandlerList handlers = new HandlerList();
+        handlers.setHandlers(new Handler[]{resource_handler, context});
+
+        server.setHandler(handlers);
 
 
 
@@ -47,6 +93,11 @@ public class Main {
         server.start();
         System.out.println("Server started");
         server.join();
+
+        //TestResource testResource = (TestResource) ReadXMLFileSAX.readXML("./data/resource.xdb");
+        //System.out.println(testResource);
+
+
 
 
 

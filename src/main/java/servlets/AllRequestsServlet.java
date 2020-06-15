@@ -1,6 +1,6 @@
 package servlets;
 
-import templater.PageGenerator;
+//import templater.PageGenerator;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -41,7 +41,7 @@ public class AllRequestsServlet extends HttpServlet {
         }
         pageVariables.put("message", message == null ? "" : message);
 
-        response.getWriter().println(PageGenerator.instance().getPage("page.html", pageVariables));
+        //response.getWriter().println(PageGenerator.instance().getPage("page.html", pageVariables));
     }
 
     private static Map<String, Object> createPageVariablesMap(HttpServletRequest request) {
