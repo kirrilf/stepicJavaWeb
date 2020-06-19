@@ -21,10 +21,18 @@ import servlets.sockets.WebSocketChatServlet;
 import resources.TestResourceController;
 import resources.TestResource;
 import resources.TestResourceControllerMBean;
+import threads.ThreadPooledServer;
+import threads.WorkerRunnable;
 
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
+import java.io.IOException;
 import java.lang.management.ManagementFactory;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 public class Main {
@@ -57,7 +65,7 @@ public class Main {
         server.setHandler(handlers);
 */
 
-
+/*
         AccountServerI accountServer = new AccountServer(10);
 
         AccountServerControllerMBean serverStatistics = new AccountServerController(accountServer);
@@ -92,12 +100,17 @@ public class Main {
 
         server.start();
         System.out.println("Server started");
-        server.join();
-
-        //TestResource testResource = (TestResource) ReadXMLFileSAX.readXML("./data/resource.xdb");
-        //System.out.println(testResource);
+        server.join();*/
 
 
+
+        ExecutorService threadPool = Executors.newFixedThreadPool(10);
+        ServerSocket serverSocketSocket = new ServerSocket(5050);
+        System.out.println("Server started");
+        while (true){
+            Socket clientSocket = serverSocketSocket.accept();
+            threadPool.execute(new WorkerRunnable(clientSocket));
+        }
 
 
 
